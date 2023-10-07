@@ -1,0 +1,45 @@
+plugins {
+    id 'java-library'
+    id 'maven-publish'
+}
+
+group = 'cloud.planton.commons'
+version = 'local'
+
+publishing {
+    publications {
+        javaCommons(MavenPublication) {
+            if (project.hasProperty('revision')) {
+                version = project.getProperty('revision')
+            }
+            from(components.java)
+        }
+    }
+}
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    maven {
+        name = 'buf'
+        url 'https://buf.build/gen/maven'
+    }
+}
+
+dependencies {
+    implementation("build.buf.gen:plantoncloud_planton-cloud-apis_grpc_java:1.55.1.1.00000000000000.86b03b391cd9")
+    implementation("build.buf.gen:plantoncloud_planton-cloud-apis_protocolbuffers_java:24.4.0.1.00000000000000.86b03b391cd9")
+
+    implementation 'build.buf:protovalidate:0.1.4'
+
+    implementation 'com.google.protobuf:protobuf-java-util:3.24.3'
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test:3.1.0'
+}
+
+test {
+    useJUnitPlatform()
+    testLogging {
+        events "passed", "skipped", "failed"
+    }
+}
